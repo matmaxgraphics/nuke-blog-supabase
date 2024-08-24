@@ -1,31 +1,52 @@
 import React, { useState, useEffect } from "react";
-import CreateRecord from "../../Utils/CreateRecord";
-import { Link, useNavigate } from "react-router-dom";
+import EditRecord from "../../Utils/EditRecord";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import supabase from "../../config/supabaseClient";
 
-const CreateCategory = function () {
-  const navigate = useNavigate()
+const EditCategory = function () {
+    const {id} = useParams()
+  const navigate = useNavigate();
   const [category, setCategory] = useState("");
   const [catDescription, setCatDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await CreateRecord("post-categories", {
+      const data = await EditRecord("post-categories", {
         category_name: category,
         category_description: catDescription,
-      });
+      }, id);
 
       if (data) {
-        console.log("category created succesfully", data);
+        console.log("category updated succesfully", data);
         setCategory("");
         setCatDescription("");
-        navigate('../admin-panel/manage-category')
+        navigate("../admin-panel/manage-category");
       }
     } catch (error) {
-      console.error("Error uploading image or creating post:", error);
+      console.error("Error updating post:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from("post-categories")
+        .select()
+        .eq("id", id)
+        .single();
+      if (error) {
+        console.log("error populating record");
+      }
+      if (data) {
+        setCategory(data.category_name);
+        setCatDescription(data.category_description);
+        console.log(data);
+      }
+    };
+    fetchCategories()
+  }, [id]);
   return (
     <PanelMainLayout>
       <div className="button-group">
@@ -59,7 +80,7 @@ const CreateCategory = function () {
 
           <div className="btn-wrap">
             <button type="submit" className="btn">
-              Add Category
+              Update Category
             </button>
           </div>
         </form>
@@ -68,4 +89,4 @@ const CreateCategory = function () {
   );
 };
 
-export default CreateCategory;
+export default EditCategory;

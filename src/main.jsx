@@ -11,6 +11,7 @@ import CreatePost from "./admin/posts/create";
 import ManagePost from "./admin/posts/index";
 import CreateCategory from "./admin/categories/create-category";
 import ManageCategory from "./admin/categories/index-category";
+import EditCategory from "./admin/categories/edit-category.jsx";
 import ManageUser from "./admin/users/index-user";
 import CreateUser from "./admin/users/create-user";
 import Test from "./pages/test";
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: "admin-panel/manage-category",
     element: <ManageCategory />,
+  },
+  {
+    path: "admin-panel/edit-category/:id",
+    element: <EditCategory />,
   },
   {
     path: "admin-panel/manage-users",

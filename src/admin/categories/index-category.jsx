@@ -61,9 +61,9 @@ const ManageCategory = function () {
                   <td>{category.category_name}</td>
                   <td>{category.category_description || "no description"}</td>
                   <td>
-                    <a href="#" className="edit">
+                    <Link to={`../admin-panel/edit-category/${category.id}`} className="edit">
                       edit
-                    </a>
+                    </Link>
                   </td>
                   <td>
                     <a
