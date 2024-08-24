@@ -1,0 +1,246 @@
+.panel-wrapper {
+  //   display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.sidebar {
+  //   flex: 0 0 250px;
+  width: 240px;
+  background-color: #101010;
+  color: #fff;
+  padding: 20px;
+  position: fixed;
+  height: 100%;
+  ul {
+    color: #fff;
+    li {
+      border-bottom: 1px solid #1e1e1e;
+      &:last-child {
+        border-bottom: unset;
+      }
+    }
+    a {
+      padding: 16px 8px;
+      display: block;
+      transition: $transitionDuration;
+      &:hover {
+        background-color: $primaryColor;
+        transition: $transitionDuration;
+      }
+    }
+  }
+  img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 48px;
+  }
+}
+.sidebar.active {
+  width: 60px;
+  display: none;
+}
+
+.sidebar.active ~ .admin-content {
+  width: calc(100% - 10px);
+  left: 10px;
+}
+
+.admin-content {
+  //   flex: 1;
+  width: calc(100% - 240px);
+  margin-left: auto;
+  position: relative;
+  //   left: 240px;
+  .toggle-container {
+    font-size: 24px;
+    i {
+      background-color: $primaryColor;
+      padding: 8px;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px;
+  }
+  .button-group {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 32px 24px;
+    background: #efefef;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid rgba(239, 239, 239, 0.5);
+  }
+  .content {
+    margin-top: 48px;
+    padding: 0 24px;
+    max-width: 1200px;
+    margin: auto;
+    h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      label {
+        margin-bottom: 8px;
+      }
+      .btn-wrap {
+        align-self: flex-end;
+        margin-top: 24px;
+      }
+    }
+    .blog-cards--wrapper {
+      row-gap: 48px;
+      .edit {
+        color: #fff;
+        background: $primaryColor;
+        &:hover {
+          background-color: #333;
+          text-decoration: underline;
+        }
+      }
+    }
+    .card--info {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+      div {
+        background-color: #f1fbea;
+        padding: 8px;
+        font-size: 16px;
+      }
+    }
+    .btn-group {
+      margin-top: 24px;
+    }
+  }
+
+  input[type="file"]::-webkit-file-upload-button {
+    background-color: $primaryColor;
+    // border-radius: 8px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    color: #fff;
+  }
+
+  input[type="file"]::file-selector-button {
+    background-color: $primaryColor;
+    // border-radius: 8px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    color: #fff;
+  }
+}
+
+@media (max-width: 1240px) {
+  .sidebar {
+    width: 0px;
+    display: none;
+  }
+  .sidebar.active {
+    width: 220px;
+    display: block;
+  }
+  .sidebar.sidebar.active ~ .admin-content {
+    overflow: hidden;
+    // left: 220px;
+    width: calc(100% - 220px);
+  }
+  .admin-content {
+    width: calc(100% - 0px);
+    left: 0px;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: inherit;
+  margin-top: 48px;
+  thead {
+    font-weight: 500;
+  }
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid $grey-03;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  table {
+    border: 0;
+    thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+  }
+  tr {
+    display: block;
+    margin-bottom: 48px;
+  }
+  td {
+    border-bottom: 1px solid $grey-03;
+    display: block;
+    text-align: right;
+  }
+  td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+  td:last-child {
+    border-bottom: 0;
+  }
+}
+.edit {
+  color: $primaryColor;
+  font-weight: 600;
+}
+.delete {
+  color: red;
+  font-weight: 600;
+  background-color: transparent;
+  transition: $transitionDuration;
+}
+.publish {
+  color: blue;
+  font-weight: 600;
+  background-color: transparent;
+  transition: $transitionDuration;
+}
+.edit:hover,
+.delete:hover,
+.publish:hover {
+  text-decoration: underline;
+  background-color: transparent;
+  transition: $transitionDuration;
+}
