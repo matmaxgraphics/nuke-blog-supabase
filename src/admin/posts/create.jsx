@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { Image } from "cloudinary-react";
+// import { Image } from "cloudinary-react";
 // import { supabaseUrl } from "../../config/config";
 // import { v4 as uuidv4 } from "uuid";
 import PanelMainLayout from "../../layout/PanelMainLayout";
@@ -13,20 +13,47 @@ function CreatePost() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [image, setImage] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from("post-categories").select();
+
+      if (error) {
+        setCategories(null);
+        console.log("Error fetching categories");
+      }
+
+      if (data) {
+        setCategories(data);
+        console.log("The fetched data:", data);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleFileUpload = async (file) => {
     setLoading(true);
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", import.meta.env.VITE_REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-    data.append("cloud_name", import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME);
+    data.append(
+      "upload_preset",
+      import.meta.env.VITE_REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    data.append(
+      "cloud_name",
+      import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME
+    );
     data.append("folder", "Cloudinary-React");
-  
+
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME
+        }/image/upload`,
         {
           method: "POST",
           body: data,
@@ -41,7 +68,6 @@ function CreatePost() {
       return null;
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +80,7 @@ function CreatePost() {
 
       const { data, error } = await supabase
         .from("blog-posts")
-        .insert([{ title, body, image: imageUrl }])
+        .insert([{ title, body, image: imageUrl, category: selectedCategory }])
         .select();
 
       if (error) {
@@ -67,6 +93,7 @@ function CreatePost() {
         setTitle("");
         setBody("");
         setImage(null);
+        setSelectedCategory("");
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
@@ -111,21 +138,26 @@ function CreatePost() {
               name="image"
               accept="image/*"
               className="input-field"
-              onChange={(e)=> setImage(e.target.files[0])}
+              onChange={(e) => setImage(e.target.files[0])}
             />
           </div>
-          {/* <div>
+          <div>
             <label>Topic</label>
-            <select name="topic" className="input-field">
-              <option value="Entertainment">Entertainment</option>
-              <option value="Tech-news">Tech news</option>
-              <option value="Health">Health</option>
-              <option value="History">History</option>
-              <option value="Movie-reviews">Movie Reviews</option>
-              <option value="Quotes">Daily Quotes</option>
-              <option value="Facts">Facts</option>
+            <select
+              name="topic"
+              className="input-field"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">Select a category</option>
+              {categories &&
+                categories.map((category, index) => (
+                  <option key={index} value={category.category_name}>
+                    {category.category_name}
+                  </option>
+                ))}
             </select>
-          </div> */}
+          </div>
           <div className="btn-wrap">
             <button type="submit" className="btn">
               Add post
