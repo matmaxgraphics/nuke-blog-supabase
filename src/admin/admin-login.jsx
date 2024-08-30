@@ -1,9 +1,5 @@
-import React, { useState } from "react";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import auth from "../firebase";
+import React, { useEffect, useState } from "react";
+import supabase from "../config/supabaseClient";
 import { useNavigate, Link } from "react-router-dom";
 import nukeLogo from "../assets/nuke-logo.png";
 import AdminNavbar from "../components/admin-navbar";
@@ -14,12 +10,27 @@ const AdminLoginForm = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [revealPassword, setRevealPassword] = useState(false);
+  const [token, setToken] = useState(null);
 
   const toggleVisibility = (e) => {
     setRevealPassword(!revealPassword);
   };
 
   const navigateTo = useNavigate();
+
+  useEffect(() => {
+    const savedToken = sessionStorage.getItem("token");
+    if (savedToken) {
+      setToken(JSON.parse(savedToken));
+      navigateTo("/admin-panel/manage-post");
+    }
+  }, [navigateTo]);
+
+  useEffect(() => {
+    if (token) {
+      sessionStorage.setItem("token", JSON.stringify(token));
+    }
+  }, [navigateTo]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -28,9 +39,13 @@ const AdminLoginForm = () => {
     setErrorMessage(null);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("sign in successful");
-
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+      if (error) throw error;
+      setToken(data.session.access_token);
+      console.log(data);
       navigateTo("/admin-panel/manage-post");
     } catch (error) {
       console.error("sign-in error", error.message);

@@ -1,14 +1,20 @@
 import React, { Children, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import nukeLogoWhite from "../assets/nuke-logo-white.png";
 // import sidebar from "../../components/sidebar";
 
-const PanelMainLayout = function ({children}) {
+const PanelMainLayout = function ({ children }) {
+  const navigateTo = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    navigateTo("/admin-panel/admin-login");
+  };
+
   return (
     <>
       <section className={`panel-wrapper ${sidebarOpen ? "sidebar-open" : ""}`}>
@@ -35,16 +41,15 @@ const PanelMainLayout = function ({children}) {
         <main className="admin-content">
           {/* admin panel navbar */}
           <nav>
-            
-              <div className="toggle-container" onClick={toggleSidebar}>
-                <i className="ri-menu-line"></i>
-              </div>
+            <div className="toggle-container" onClick={toggleSidebar}>
+              <i className="ri-menu-line"></i>
+            </div>
 
-              <div className="logout">
-                <Link to="/admin-panel/admin-login">
-                  <button className="btn">Logout</button>
-                </Link>
-              </div>
+            <div className="logout">
+              <Link to="/admin-panel/admin-login">
+                <button className="btn" onClick={handleLogout}>Logout</button>
+              </Link>
+            </div>
           </nav>
 
           {children}
@@ -52,6 +57,11 @@ const PanelMainLayout = function ({children}) {
       </section>
     </>
   );
+};
+
+const handleLogout = ({token}) => {
+  sessionStorage.removeItem("token");
+  navigateTo("admin-panel/admin-login");
 };
 
 export default PanelMainLayout;

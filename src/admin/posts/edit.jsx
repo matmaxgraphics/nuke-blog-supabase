@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import EditRecord from "../../Utils/EditRecord";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
-
-function CreatePost() {
-  const navigate = useNavigate()
+function EditPost() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [image, setImage] = useState(null);
@@ -30,6 +31,27 @@ function CreatePost() {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("blog-posts")
+        .select()
+        .eq("id", id)
+        .single();
+      if (error) {
+        console.log("error populating record: ", error);
+      }
+      if (data) {
+        setTitle(data.title);
+        setBody(data.body);
+        setImage(null);
+        setSelectedCategory(data.category);
+        console.log(data);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const handleFileUpload = async (file) => {
     setLoading(true);
@@ -67,6 +89,8 @@ function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("form submitted");
+
     try {
       let imageUrl = null;
       if (image) {
@@ -74,23 +98,26 @@ function CreatePost() {
         // setImage(imageUrl);
       }
 
-      const { data, error } = await supabase
-        .from("blog-posts")
-        .insert([{ title, body, image: imageUrl, category: selectedCategory }])
-        .select();
+      const { data, error } = await EditRecord(
+        "blog-posts",
+        { title, body, image: imageUrl, category: selectedCategory },
+        id
+      );
 
+      console.log("Data returned:", data); // Debugging line
+      console.log("Error returned:", error);
       if (error) {
         console.log(error);
         throw error;
       }
 
       if (data) {
-        console.log("post created successfully:", data);
+        console.log("post updated successfully:", data);
         setTitle("");
         setBody("");
         setImage(null);
         setSelectedCategory("");
-        navigate('../admin-panel/manage-post')
+        navigate("../admin-panel/manage-post");
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
@@ -107,7 +134,7 @@ function CreatePost() {
       </div>
 
       <div className="content">
-        <h2 className="page-title">Create Post</h2>
+        <h2 className="page-title">Edit Post</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>Blog Title</label>
@@ -157,7 +184,7 @@ function CreatePost() {
           </div>
           <div className="btn-wrap">
             <button type="submit" className="btn">
-              Add post
+              Update post
             </button>
           </div>
         </form>
@@ -166,4 +193,4 @@ function CreatePost() {
   );
 }
 
-export default CreatePost;
+export default EditPost;

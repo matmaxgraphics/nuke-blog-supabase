@@ -5,7 +5,7 @@ import PanelMainLayout from "../../layout/PanelMainLayout";
 import supabase from "../../config/supabaseClient";
 
 const EditCategory = function () {
-    const {id} = useParams()
+  const { id } = useParams();
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
   const [catDescription, setCatDescription] = useState("");
@@ -13,10 +13,14 @@ const EditCategory = function () {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await EditRecord("post-categories", {
-        category_name: category,
-        category_description: catDescription,
-      }, id);
+      const data = await EditRecord(
+        "post-categories",
+        {
+          category_name: category,
+          category_description: catDescription,
+        },
+        id
+      );
 
       if (data) {
         console.log("category updated succesfully", data);
@@ -25,7 +29,7 @@ const EditCategory = function () {
         navigate("../admin-panel/manage-category");
       }
     } catch (error) {
-      console.error("Error updating post:", error);
+      console.error("Error updating category:", error);
     }
   };
 
@@ -45,7 +49,7 @@ const EditCategory = function () {
         console.log(data);
       }
     };
-    fetchCategories()
+    fetchCategories();
   }, [id]);
   return (
     <PanelMainLayout>

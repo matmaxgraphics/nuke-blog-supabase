@@ -9,6 +9,7 @@ import ContactForm from "./pages/contact";
 import AdminLoginForm from "./admin/admin-login";
 import CreatePost from "./admin/posts/create";
 import ManagePost from "./admin/posts/index";
+import EditPost from "./admin/posts/edit.jsx";
 import CreateCategory from "./admin/categories/create-category";
 import ManageCategory from "./admin/categories/index-category";
 import EditCategory from "./admin/categories/edit-category.jsx";
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "admin-panel/manage-post",
     element: <ManagePost />,
+  },
+  {
+    path: "admin-panel/edit-post/:id",
+    element: <EditPost />,
   },
   {
     path: "admin-panel/create-category",
