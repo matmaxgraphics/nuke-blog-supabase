@@ -1,9 +1,6 @@
 import supabase from "../config/supabaseClient";
 
 const EditRecord = async (tableName, record, id) => {
-  console.log("Table Name:", tableName);
-  console.log("Record to Update:", record);
-  console.log("ID:", id);
   try {
     const { data, error } = await supabase
       .from(tableName)
@@ -13,15 +10,16 @@ const EditRecord = async (tableName, record, id) => {
 
     if (error) {
       console.error(`Error updating ${tableName}:`, error);
-      throw error;
+      return { data: null, error };
     }
 
-    console.log(data);
-
-    return data;
+    if (data) {
+      console.log("Data from Supabase:", data);
+      return { data, error: null };
+    }
   } catch (error) {
     console.error("Error updating record:", error);
-    throw error;
+    return { data: null, error };
   }
 };
 

@@ -44,6 +44,8 @@ const AdminLoginForm = () => {
         password: password,
       });
       if (error) throw error;
+      const user_id = data.user.id;
+      sessionStorage.setItem("user_id", user_id)
       setToken(data.session.access_token);
       console.log(data);
       navigateTo("/admin-panel/manage-post");

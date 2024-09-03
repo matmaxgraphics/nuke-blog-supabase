@@ -3,9 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
-
 function CreatePost() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [image, setImage] = useState(null);
@@ -73,10 +72,14 @@ function CreatePost() {
         imageUrl = await handleFileUpload(image);
         // setImage(imageUrl);
       }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const user_id = user?.id;
 
       const { data, error } = await supabase
         .from("blog-posts")
-        .insert([{ title, body, image: imageUrl, category: selectedCategory }])
+        .insert([{ title, body, image: imageUrl, category: selectedCategory, user_id }])
         .select();
 
       if (error) {
@@ -90,7 +93,7 @@ function CreatePost() {
         setBody("");
         setImage(null);
         setSelectedCategory("");
-        navigate('../admin-panel/manage-post')
+        navigate("../admin-panel/manage-post");
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);

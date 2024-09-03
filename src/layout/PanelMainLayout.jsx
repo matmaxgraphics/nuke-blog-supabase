@@ -7,6 +7,10 @@ const PanelMainLayout = function ({ children }) {
   const navigateTo = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+
+  // console.log(user_id);
+  
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };

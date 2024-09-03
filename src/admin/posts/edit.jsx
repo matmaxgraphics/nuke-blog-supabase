@@ -14,6 +14,8 @@ function EditPost() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const user_id = sessionStorage.getItem("user_id")
+
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase.from("post-categories").select();
@@ -89,7 +91,6 @@ function EditPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("form submitted");
 
     try {
       let imageUrl = null;
@@ -98,21 +99,21 @@ function EditPost() {
         // setImage(imageUrl);
       }
 
-      const { data, error } = await EditRecord(
+      const result = await EditRecord(
         "blog-posts",
-        { title, body, image: imageUrl, category: selectedCategory },
+        { title, body, image: imageUrl, category: selectedCategory, user_id },
         id
       );
 
-      console.log("Data returned:", data); // Debugging line
-      console.log("Error returned:", error);
-      if (error) {
-        console.log(error);
-        throw error;
+      console.log("Result returned:", result, user_id); // Debugging line
+
+      if (result?.error) {
+        console.log(result.error);
+        throw result.error;
       }
 
-      if (data) {
-        console.log("post updated successfully:", data);
+      if (result?.data) {
+        console.log("post updated successfully:", result.data);
         setTitle("");
         setBody("");
         setImage(null);
