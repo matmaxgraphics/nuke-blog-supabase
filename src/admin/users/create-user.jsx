@@ -1,8 +1,47 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import supabase from "../../config/supabaseClient";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
 const CreateUser = function () {
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [revealPassword, setRevealPassword] = useState(false);
+
+  const toggleVisibility = (e) => {
+    setRevealPassword(!revealPassword);
+  };
+
+  const navigateTo = useNavigate();
+
+  const handleSignUp = async(e)=>{
+    e.preventDefault()
+
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try{
+      const {data, error} = await supabase.auth.signUp({
+        fullname: fullname,
+        email: email,
+        password: password
+      })
+      if(error) throw error;
+      console.log(data);
+      
+    }catch(error){
+      console.error("Sign up error", error);
+      setErrorMessage(
+        "There's an error signing up, please try again"
+      );
+
+      setIsLoading(false)
+    }
+  }
+
   return (
     <PanelMainLayout>
       <div className="button-group">
@@ -14,42 +53,70 @@ const CreateUser = function () {
 
       <div className="content">
         <h2 className="page-title">Create User</h2>
-        <form>
+        <form className="contact-form">
           <div>
-            <label>Username</label>
-            <input type="text" name="username" className="input-field" />
-          </div>
-          <div>
-            <label>Email</label>
-            <input type="email" name="email" className="input-field" />
-          </div>
-          <div>
-            <label>Password</label>
-            <input type="password" name="password" className="input-field" />
-          </div>
-
-          <div>
-            <label>Comfirm Password</label>
+            <label htmlFor="fullname">Fullname</label>
             <input
-              type="password"
-              name="passwordConf"
-              className="input-field"
-            />
+                type="text"
+                name="name"
+                className="input-field"
+                placeholder="e.g John Doe"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                required
+              />
           </div>
+            <div>
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                className="input-field"
+                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>Password</label>
+              <input
+                type={revealPassword ? "text" : "password"}
+                name="pword"
+                className="input-field password-field"
+                placeholder="Input your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <small className="visibility-toggle" onClick={toggleVisibility}>
+                {revealPassword ? "Hide" : "Show"}
+              </small>
+            </div>
 
-          <div>
-            <label>User</label>
-            <select name="role" className="input-field">
-              <option value="author">Author</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div className="btn-wrap">
-            <button type="submit" className="btn">
-              Add user
+            {errorMessage && (
+              <div className="alert-message">
+                <small id="message" className="error-message">
+                  {errorMessage}
+                </small>
+              </div>
+            )}
+            <button
+              type="submit"
+              className={isLoading ? "loading-button btn" : "normal-button btn"}
+              onClick={handleSignUp}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span>Loading...</span>
+              ) : (
+                <span>Create User</span>
+              )}
             </button>
-          </div>
-        </form>
+            {/* <button type="submit" className="btn" onClick={handleSignUp}>
+                Sign up to Panel
+              </button> */}
+          </form>
       </div>
     </PanelMainLayout>
   );

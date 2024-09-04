@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
+import DeleteRecord from "../../Utils/DeleteRecord";
 import moment from "moment";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
@@ -29,6 +30,18 @@ const ManagePost = function () {
 
     fetchPosts();
   }, [orderBy]);
+
+  const handleDelete = async(id)=>{
+    try{
+      await DeleteRecord("blog-posts", id)
+      setPosts(posts.filter((post)=> post.id !== id))
+      console.log(`Post with id: ${id} deleted successfully`);
+      
+    } catch(error){
+      console.error("Error deleting post:", error);
+      
+    }
+  }
 
   return (
     <PanelMainLayout>
@@ -69,7 +82,7 @@ const ManagePost = function () {
 
                   <div className="btn-group">
                     <Link to={`../admin-panel/edit-post/${post.id}`} className="link-btn edit">edit</Link>
-                    <a className="link-btn delete">delete</a>
+                    <a className="link-btn delete" onClick={()=> handleDelete(post.id)}>delete</a>
                     <a className="link-btn publish">unpublish</a>
                   </div>
                 </article>
