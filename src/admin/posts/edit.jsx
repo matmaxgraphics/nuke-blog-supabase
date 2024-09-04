@@ -47,7 +47,7 @@ function EditPost() {
       if (data) {
         setTitle(data.title);
         setBody(data.body);
-        setImage(null);
+        setImage(data.image);
         setSelectedCategory(data.category);
         console.log(data);
       }
