@@ -1,24 +1,46 @@
 import { Outlet, Link } from "react-router-dom";
-import img1 from "../assets/img-1.png";
-import img2 from "../assets/img-2.png";
-import img3 from "../assets/img-3.png";
-import img4 from "../assets/img-4.png";
 import arrowIcon from "../assets/arrow-right.svg";
-import useFetchData from "./useFetchData";
+import supabase from "../config/supabaseClient";
+import Date from "../Utils/Date";
+import moment from "moment";
+import { useState, useEffect } from "react";
 
 const RecentArticle = () => {
-  const {data} = useFetchData('https://jsonplaceholder.typicode.com/posts', 4)
+  const [posts, setPosts] = useState();
+  const [orderBy, setOrderBy] = useState("created_at");
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from("blog-posts")
+        .select()
+        .range(0, 3)
+        .order(orderBy, { ascending: false });
+
+      if (error) {
+        setPosts(null);
+        console.log("Error fetching posts");
+      }
+
+      if (data) {
+        setPosts(data);
+        console.log("The fetched data:", data);
+      }
+    };
+
+    fetchPosts();
+  }, [orderBy]);
+
   return (
     <section className="recent-article--section max-width">
       <h2>Recent Articles</h2>
 
       <main className="blog-cards--wrapper">
-        {data && data.map((post) => (
+        {posts && posts.map((post, index) => (
           <article className="blog-card--container" key={post.id}>
           <Link to={`/single-article/${post.id}`}>
-            <img src={img2} alt="" className="blog-display--image" />
+            <img src={post.image} alt="" className="blog-display--image" />
             <div className="blog-details">
-              <small className="blog-upload--date">16th September, 2023</small>
+              <Date date={post.created_at} />
               <h4 className="blog-title">{post.title}</h4>
             </div>
           </Link>
@@ -38,5 +60,10 @@ const RecentArticle = () => {
     </section>
   );
 };
+
+// const Date = ({ date }) => {
+//   const dateString = moment(date).format("MMMM Do YYYY");
+//   return <small className="blog-upload--date">{dateString}</small>;
+// };
 
 export default RecentArticle;

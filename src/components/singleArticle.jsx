@@ -1,27 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import useFetchData from "./useFetchData";
-import newsImage1 from "../assets/news-img1.png";
-import articleImg from "../assets/article-img.png";
+import supabase from "../config/supabaseClient";
+import moment from "moment";
 
 const SingleArticle = () => {
   const { id } = useParams();
-  const {data} = useFetchData(`https://jsonplaceholder.typicode.com/posts/${id}`)
+  const [singleArticle, setSingleArticle] = useState()
 
-  if(!data) {
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("blog-posts")
+        .select()
+        .eq("id", id)
+        .single();
+      if (error) {
+        console.log("error populating page: ", error);
+      }
+      if (data) {
+        setSingleArticle(data)
+        console.log(data);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  if(!singleArticle) {
     return <div>Loading...</div>
   }
   return (
     <main className="post--wrapper">
-      <PostBreadcrumb />
-      <PostHeader title={data.title} date="4th January, 2023"/>
-      <PostBodyContent body={data.body}/>
+      <PostBreadcrumb category={singleArticle.category}/>
+      <PostHeader title={singleArticle.title} date={singleArticle.created_at} image={singleArticle.image}/>
+      <PostBodyContent body={singleArticle.body}/>
       <ArticleSharing />
     </main>
   );
 };
 
-const PostBreadcrumb = () => {
+const PostBreadcrumb = ({category}) => {
   return (
     <section className="breadcrumb-container max-width">
       <article className="breadcrumb--wrapper">
@@ -29,18 +46,19 @@ const PostBreadcrumb = () => {
           <a href="">Home / </a>
         </span>
         <span>
-          <a href="">Lifestyle</a>
+          <a href="">{category}</a>
         </span>
       </article>
     </section>
   );
 };
-const PostHeader = ({title, date}) => {
+const PostHeader = ({title, date, image}) => {
+  const dateString = moment(date).format("MMMM Do YYYY");
   return (
     <section className="banner--container section-flex max-width">
       <article className="text-description">
         <div className="date--duration-tag">
-          <small className="date-tag">{date}</small>
+          <small className="date-tag">{dateString}</small>
           <span className="circle"></span>
           <small className="duration">6 min read</small>
         </div>
@@ -49,7 +67,7 @@ const PostHeader = ({title, date}) => {
       </article>
 
       <article className="img-container">
-        <img src={newsImage1} alt="" />
+        <img src={image} alt="" />
       </article>
     </section>
   );

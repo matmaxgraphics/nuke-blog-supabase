@@ -1,25 +1,47 @@
-import { Link } from "react-router-dom";
-import img4 from "../assets/img-4.png";
+import { Outlet, Link } from "react-router-dom";
 import arrowIcon from "../assets/arrow-right.svg";
+import supabase from "../config/supabaseClient";
+import Date from "../Utils/Date";
+import moment from "moment";
 import useFetchData from "./useFetchData";
+import { useState, useEffect } from "react";
 
 const PopularArticle = () => {
-  const { data } = useFetchData(
-    "https://jsonplaceholder.typicode.com/posts",
-    4
-  );
+  const [posts, setPosts] = useState();
+  const [orderBy, setOrderBy] = useState("created_at");
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from("blog-posts")
+        .select()
+        .range(4, 6)
+        .order(orderBy, { ascending: false });
+
+      if (error) {
+        setPosts(null);
+        console.log("Error fetching posts");
+      }
+
+      if (data) {
+        setPosts(data);
+        console.log("The fetched data:", data);
+      }
+    };
+
+    fetchPosts();
+  }, [orderBy]);
   return (
     <section className="popular-article--section recent-article--section max-width">
       <h2>Popular Articles</h2>
       <main className="blog-cards--wrapper">
-        {data &&
-          data.map((post) => (
+        {posts &&
+          posts.map((post) => (
             <article className="blog-card" key={post.id}>
               <div className="blog--image">
-                <img src={img4} alt="" />
+                <img src={post.image} alt="" />
               </div>
               <div className="blog-details">
-                <small className="blog-upload--date">SEPTEMBER 06, 2022</small>
+                <Date date={post.created_at} />
                 <h4 className="blog-title">
                  {post.title}
                 </h4>
