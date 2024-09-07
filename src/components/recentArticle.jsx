@@ -36,7 +36,7 @@ const RecentArticle = () => {
 
       <main className="blog-cards--wrapper">
         {posts && posts.map((post, index) => (
-          <article className="blog-card--container" key={post.id}>
+          <article className="blog-card--container" key={index}>
           <Link to={`/single-article/${post.id}`}>
             <img src={post.image} alt="" className="blog-display--image" />
             <div className="blog-details">
