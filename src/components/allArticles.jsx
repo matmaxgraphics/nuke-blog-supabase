@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import Date from "../Utils/Date";
+import SkeletonLoader from "./SkeletonLoader";
 // import img1 from "../assets/img-1.png";
 import downArrowIcon from "../assets/arrow-down.svg";
 import PopularArticle from "../components/popularArticle";
@@ -52,7 +53,9 @@ const AllArticlesContent = () => {
   return (
     <section className="articles--container recent-article--section max-width">
       <main className="blog-cards--wrapper">
-        {posts &&
+        {loading ? (
+          <SkeletonLoader />
+        ) : (posts &&
           posts.map((post, index) => (
             <article className="blog-card--container" key={index}>
               <Link to={`/single-article/${post.id}`}>
@@ -63,10 +66,10 @@ const AllArticlesContent = () => {
                 </div>
               </Link>
             </article>
-          ))}
+          )))}
       </main>
       {loading ? (
-        <p>Loading...</p>
+        <SkeletonLoader/>
       ) : (
         <button
           className="read--more_btn link--button"
