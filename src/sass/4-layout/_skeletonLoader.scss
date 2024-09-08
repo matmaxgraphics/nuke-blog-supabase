@@ -1,5 +1,4 @@
 .skeleton {
-  max-width: 100%;
   width: 100%;
   background: #fff;
   display: flex;
@@ -30,6 +29,30 @@
   padding-right: 15px;
 }
 
+.skeleton-flex {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 24px;
+  padding: 24px;
+  .text--container {
+    width: 50%;
+  }
+  .img-demo {
+    width: 50%;
+    height: 300px;
+  }
+  .w70 {
+    width: 70%;
+  }
+  .w60 {
+    width: 60%;
+  }
+  .w100 {
+    width: 100%;
+  }
+}
+
 @keyframes wave-lines {
   0% {
     background-position: -468px 0;
@@ -57,6 +80,17 @@
   }
 }
 
+@media (max-width: 700px) {
+  .skeleton-flex {
+    flex-direction: column;
+    .text--container {
+      width: 100%;
+    }
+    .img-demo {
+      width: 100%;
+    }
+  }
+}
 @media (max-width: 600px) {
   .skeleton {
     .skeleton-left {

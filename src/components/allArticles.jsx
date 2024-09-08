@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
+import UseFetchPosts from "../Utils/useFetchPost";
 import supabase from "../config/supabaseClient";
 import Date from "../Utils/Date";
 import SkeletonLoader from "./SkeletonLoader";

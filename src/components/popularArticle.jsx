@@ -1,37 +1,13 @@
 import { Link } from "react-router-dom";
 import arrowIcon from "../assets/arrow-right.svg";
+import UseFetchPosts from "../Utils/useFetchPost";
 import supabase from "../config/supabaseClient";
 import SkeletonLoader from "./SkeletonLoader";
 import Date from "../Utils/Date";
 import { useState, useEffect } from "react";
 
 const PopularArticle = () => {
-  const [posts, setPosts] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [orderBy, setOrderBy] = useState("created_at");
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("blog-posts")
-        .select()
-        .range(4, 6)
-        .order(orderBy, { ascending: false });
-
-      if (error) {
-        setPosts(null);
-        console.log("Error fetching posts");
-      }
-
-      if (data) {
-        setPosts(data);
-        console.log("The fetched data:", data);
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [orderBy]);
+  const { posts, isLoading, error } = UseFetchPosts(4, 6, "created_at");
   return (
     <section className="popular-article--section recent-article--section max-width">
       <h2>Popular Articles</h2>
