@@ -3,7 +3,6 @@ import arrowIcon from "../assets/arrow-right.svg";
 import supabase from "../config/supabaseClient";
 import SkeletonLoader from "./SkeletonLoader";
 import Date from "../Utils/Date";
-import moment from "moment";
 import { useState, useEffect } from "react";
 
 const RecentArticle = () => {

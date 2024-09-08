@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SkeletonLoader() {
+export default function SkeletonLoaderHeader() {
   return (
     <>
       <div className="skeleton">
