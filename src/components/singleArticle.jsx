@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import SkeletonLoaderText from "./SkeletonLoaderText";
 import { FacebookShareButton, FacebookIcon } from "react-share";
@@ -42,6 +42,7 @@ const SingleArticle = () => {
         title={singleArticle.title}
         date={singleArticle.created_at}
         image={singleArticle.image}
+        duration={singleArticle.body}
       />
       <PostBodyContent body={singleArticle.body} />
       <ArticleSharing
@@ -57,7 +58,7 @@ const PostBreadcrumb = ({ category }) => {
     <section className="breadcrumb-container max-width">
       <article className="breadcrumb--wrapper">
         <span>
-          <a href="">Home / </a>
+          <Link to={'/'}>Home / </Link>
         </span>
         <span>
           <a href="">{category}</a>
@@ -66,15 +67,19 @@ const PostBreadcrumb = ({ category }) => {
     </section>
   );
 };
-const PostHeader = ({ title, date, image }) => {
+const PostHeader = ({ title, date, image, duration }) => {
   const dateString = moment(date).format("MMMM Do YYYY");
+
+  const wordCount = duration.split(' ').length;
+  const wordsPerMinute = 200;
+  const estimatedReadingTime = Math.ceil(wordCount / wordsPerMinute)
   return (
     <section className="banner--container section-flex max-width">
       <article className="text-description">
         <div className="date--duration-tag">
           <small className="date-tag">{dateString}</small>
           <span className="circle"></span>
-          <small className="duration">6 min read</small>
+          <small className="duration">{estimatedReadingTime} min read</small>
         </div>
 
         <h1>{title}</h1>
@@ -90,7 +95,7 @@ const PostHeader = ({ title, date, image }) => {
 const PostBodyContent = ({ body }) => {
   return (
     <section className="article-container max-width_1200">
-      <div>{body}</div>
+      <div><pre>{body}</pre></div>
     </section>
   );
 };
