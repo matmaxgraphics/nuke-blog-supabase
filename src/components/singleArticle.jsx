@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import supabase from "../config/supabaseClient";
+import SkeletonLoaderText from "./SkeletonLoaderText";
+import { FacebookShareButton, FacebookIcon } from "react-share";
 import moment from "moment";
 
 const SingleArticle = () => {
   const { id } = useParams();
   const [singleArticle, setSingleArticle] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const articleUrl = window.location.href;
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("blog-posts")
         .select()
@@ -23,12 +27,13 @@ const SingleArticle = () => {
         setSingleArticle(data);
         console.log(data);
       }
+      setIsLoading(false);
     };
     fetchData();
   }, [id]);
 
   if (!singleArticle) {
-    return <div>Loading...</div>;
+    return <SkeletonLoaderText />;
   }
   return (
     <main className="post--wrapper">
@@ -102,7 +107,7 @@ const ArticleSharing = ({ articleUrl, articleTitle }) => {
     )}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
       articleUrl
-    )}`,
+    )}&text=${encodeURIComponent(articleTitle)}`,
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       articleUrl
     )}&text=${encodeURIComponent(articleTitle)}`,
@@ -118,13 +123,18 @@ const ArticleSharing = ({ articleUrl, articleTitle }) => {
             <i className="ri-file-copy-line"></i> Copy link
           </span>
           <span>
-            <a
+            <FacebookShareButton
+              url={articleUrl}
+              quote={articleTitle}
+            >
+              <i className="ri-facebook-circle-fill"></i>
+            </FacebookShareButton>
+            {/* <a
               href={socialMediaLinks.facebook}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="ri-facebook-circle-fill"></i>
-            </a>
+            </a> */}
           </span>
           <span>
             <a
