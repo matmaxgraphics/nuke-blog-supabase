@@ -14,6 +14,27 @@ export default function SkeletonLoaderHeader() {
           </div>
           <div className="line img-demo"></div>
         </div>
+        <div className="skeleton padding-container">
+          <div className="skeleton-left">
+            <div className="line img-demo"></div>
+            <div className="line text-demo"></div>
+          </div>
+
+          <div className="skeleton-left">
+            <div className="line img-demo"></div>
+            <div className="line text-demo"></div>
+          </div>
+
+          <div className="skeleton-left">
+            <div className="line img-demo"></div>
+            <div className="line text-demo"></div>
+          </div>
+
+          <div className="skeleton-left">
+            <div className="line img-demo"></div>
+            <div className="line text-demo"></div>
+          </div>
+        </div>
       </div>
     </>
   );

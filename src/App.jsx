@@ -1,54 +1,56 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import RecentArticle from "./components/recentArticle";
 import PopularArticle from "./components/popularArticle";
 import Newsletter from "./components/newsletter";
 import Footer from "./components/footer";
-import SingleArticlePage from "./pages/article";
-import img1 from "./assets/img-1.png";
-import img2 from "./assets/img-2.png";
-import img3 from "./assets/img-3.png";
-
-// import "./App.css";
 import "./sass/main.scss";
-
-const articlesData = [
-  {
-    id: 1,
-    title: 'Everyday lifestyle of different activities',
-    date: 'SEPTEMBER 06, 2022',
-    image: img1,
-  },
-  {
-    id: 2,
-    title: 'Another interesting article',
-    date: 'SEPTEMBER 10, 2022',
-    image: img2,
-  },
-  {
-    id: 3,
-    title: 'Everyday lifestyle of different activities',
-    date: 'SEPTEMBER 10, 2022',
-    image: img3,
-  },
-  {
-    id: 4,
-    title: 'Another interesting article',
-    date: 'SEPTEMBER 10, 2022',
-    image: img2,
-  },
-  // Add more articles as needed
-];
-
+import supabase from "./config/supabaseClient";
 
 function App() {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("blog-posts")
+        .select()
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.log("Error fetching posts:", error);
+        setPosts([]);
+      } else if (data) {
+        setPosts(data);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <>
       <Header />
-      <RecentArticle articles={articlesData} />
-      <PopularArticle />
+      
+      {/* Conditionally render Recent and Popular Articles based on whether posts exist */}
+      {!isLoading && posts.length > 0 ? (
+        <>
+          <RecentArticle posts={posts} />
+          <PopularArticle posts={posts} />
+        </>
+      ) : (
+        // Render a placeholder or nothing when there are no articles
+        !isLoading && (
+          <div className="empty-state">
+            <p>No articles yet, check back later!</p>
+          </div>
+        )
+      )}
+
       <Newsletter />
       <Footer />
     </>
