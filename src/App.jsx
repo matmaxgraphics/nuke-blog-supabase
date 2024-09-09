@@ -5,6 +5,7 @@ import PopularArticle from "./components/popularArticle";
 import Newsletter from "./components/newsletter";
 import Footer from "./components/footer";
 import "./sass/main.scss";
+import emptyImg from "./assets/empty-state.png"
 import supabase from "./config/supabaseClient";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         // Render a placeholder or nothing when there are no articles
         !isLoading && (
           <div className="empty-state">
+            <img src={emptyImg} alt="" />
             <p>No articles yet, check back later!</p>
           </div>
         )

@@ -245,3 +245,16 @@
 }
 
 /*============END OF CONTACT PAGE STYLNG===========*/
+
+.empty-state{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 40vh;
+  align-items: center;
+  img{
+    width: 300px;
+    height: auto;
+    margin-bottom: 24px;
+  }
+}
