@@ -10,6 +10,7 @@ function CreatePost() {
   const [image, setImage] = useState(null);
   const [categories, setCategories] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -79,7 +80,16 @@ function CreatePost() {
 
       const { data, error } = await supabase
         .from("blog-posts")
-        .insert([{ title, body, image: imageUrl, category: selectedCategory, user_id }])
+        .insert([
+          {
+            title,
+            body,
+            image: imageUrl,
+            category: selectedCategory,
+            category_id: selectedCategoryId, // Add this line
+            user_id,
+          },
+        ])
         .select();
 
       if (error) {
@@ -93,13 +103,13 @@ function CreatePost() {
         setBody("");
         setImage(null);
         setSelectedCategory("");
+        setSelectedCategoryId(""); // Reset the selected category ID
         navigate("../admin-panel/manage-post");
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
     }
   };
-
   return (
     <PanelMainLayout>
       <div className="button-group">
@@ -147,7 +157,13 @@ function CreatePost() {
               name="topic"
               className="input-field"
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                const categoryId = categories.find(
+                  (category) => category.category_name === e.target.value
+                ).id;
+                setSelectedCategoryId(categoryId); // Set the selected category ID
+              }}
             >
               <option value="">Select a category</option>
               {categories &&
