@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
+import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
 const CreateUser = function () {
@@ -16,31 +17,35 @@ const CreateUser = function () {
   };
 
   const navigateTo = useNavigate();
-
-  const handleSignUp = async(e)=>{
-    e.preventDefault()
-
+  
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    
     setIsLoading(true);
     setErrorMessage(null);
-
-    try{
-      const {data, error} = await supabase.auth.signUp({
-        fullname: fullname,
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email: email,
-        password: password
-      })
-      if(error) throw error;
-      console.log(data);
-      
-    }catch(error){
+        password: password,
+        options: {
+          data: {
+            full_name: fullname,
+          },
+        },
+      });
+      if (error) throw error;
+      if (data) {
+        navigateTo('../admin-panel/manage-users')
+        console.log(data);
+      }
+    } catch (error) {
       console.error("Sign up error", error);
-      setErrorMessage(
-        "There's an error signing up, please try again"
-      );
+      setErrorMessage("There's an error signing up, please try again");
 
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <PanelMainLayout>
@@ -57,66 +62,63 @@ const CreateUser = function () {
           <div>
             <label htmlFor="fullname">Fullname</label>
             <input
-                type="text"
-                name="name"
-                className="input-field"
-                placeholder="e.g John Doe"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-                required
-              />
+              type="text"
+              name="name"
+              className="input-field"
+              placeholder="e.g John Doe"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
+              required
+            />
           </div>
-            <div>
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                className="input-field"
-                placeholder="email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>Password</label>
-              <input
-                type={revealPassword ? "text" : "password"}
-                name="pword"
-                className="input-field password-field"
-                placeholder="Input your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <small className="visibility-toggle" onClick={toggleVisibility}>
-                {revealPassword ? "Hide" : "Show"}
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              className="input-field"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              type={revealPassword ? "text" : "password"}
+              name="pword"
+              className="input-field password-field"
+              placeholder="Input your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <small className="visibility-toggle" onClick={toggleVisibility}>
+              {revealPassword ? "Hide" : "Show"}
+            </small>
+          </div>
+
+          {errorMessage && (
+            <div className="alert-message">
+              <small id="message" className="error-message">
+                {errorMessage}
               </small>
             </div>
-
-            {errorMessage && (
-              <div className="alert-message">
-                <small id="message" className="error-message">
-                  {errorMessage}
-                </small>
-              </div>
-            )}
-            <button
-              type="submit"
-              className={isLoading ? "loading-button btn" : "normal-button btn"}
+          )}
+          <div className="btn-wrap">
+            <Button
+              isLoading={isLoading}
               onClick={handleSignUp}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span>Loading...</span>
-              ) : (
-                <span>Create User</span>
-              )}
-            </button>
-            {/* <button type="submit" className="btn" onClick={handleSignUp}>
+              buttonText="Create user"
+              loadingText="Creating user"
+              className="btn"
+            />
+          </div>
+          {/* <button type="submit" className="btn" onClick={handleSignUp}>
                 Sign up to Panel
               </button> */}
-          </form>
+        </form>
       </div>
     </PanelMainLayout>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditRecord from "../../Utils/EditRecord";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
+import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
 function EditPost() {
@@ -184,9 +185,12 @@ function EditPost() {
             </select>
           </div>
           <div className="btn-wrap">
-            <button type="submit" className="btn">
-              Update post
-            </button>
+          <Button
+              isLoading={loading}
+              buttonText="Update post"
+              loadingText="Updating..."
+              className="btn"
+            />
           </div>
         </form>
       </div>

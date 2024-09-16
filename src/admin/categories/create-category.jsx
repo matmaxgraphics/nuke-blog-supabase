@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import CreateRecord from "../../Utils/CreateRecord";
 import { Link, useNavigate } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import Button from "../../Utils/Button";
 
 const CreateCategory = function () {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [category, setCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
   const [catDescription, setCatDescription] = useState("");
 
   const handleSubmit = async (e) => {
@@ -20,7 +22,7 @@ const CreateCategory = function () {
         console.log("category created succesfully", data);
         setCategory("");
         setCatDescription("");
-        navigate('../admin-panel/manage-category')
+        navigate("../admin-panel/manage-category");
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
@@ -58,9 +60,12 @@ const CreateCategory = function () {
           </div>
 
           <div className="btn-wrap">
-            <button type="submit" className="btn">
-              Add Category
-            </button>
+            <Button
+              isLoading={isLoading}
+              buttonText="Create category"
+              loadingText="Loading..."
+              className="btn"
+            />
           </div>
         </form>
       </div>

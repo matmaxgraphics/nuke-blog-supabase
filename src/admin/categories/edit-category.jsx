@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditRecord from "../../Utils/EditRecord";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import Button from "../../Utils/Button";
 import supabase from "../../config/supabaseClient";
 
 const EditCategory = function () {
@@ -9,6 +10,7 @@ const EditCategory = function () {
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
   const [catDescription, setCatDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,9 +85,12 @@ const EditCategory = function () {
           </div>
 
           <div className="btn-wrap">
-            <button type="submit" className="btn">
-              Update Category
-            </button>
+            <Button
+              isLoading={isLoading}
+              buttonText="Update Category"
+              loadingText="Updating..."
+              className="btn"
+            />
           </div>
         </form>
       </div>

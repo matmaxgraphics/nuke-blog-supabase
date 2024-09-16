@@ -11,6 +11,7 @@ const DeleteRecord = async (tableName, recordId) => {
       throw error;
     }
 
+    console.log(`Deleted record with id: ${recordId}`, data);
     return data;
   } catch (error) {
     console.error("Error deleting record:", error);

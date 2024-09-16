@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../config/supabaseClient";
 import { useNavigate, Link } from "react-router-dom";
-import nukeLogo from "../assets/nuke-logo.png";
+import Button from "../Utils/Button";
 import AdminNavbar from "../components/admin-navbar";
 
 const AdminLoginForm = () => {
@@ -45,7 +45,9 @@ const AdminLoginForm = () => {
       });
       if (error) throw error;
       const user_id = data.user.id;
-      sessionStorage.setItem("user_id", user_id)
+      sessionStorage.setItem("user_id", user_id);
+      const userEmail = data?.user?.user_metadata?.full_name;
+      sessionStorage.setItem("user_email", userEmail);
       setToken(data.session.access_token);
       console.log(data);
       navigateTo("/admin-panel/manage-post");
@@ -111,18 +113,13 @@ const AdminLoginForm = () => {
                 </small>
               </div>
             )}
-            <button
-              type="submit"
-              className={isLoading ? "loading-button btn" : "normal-button btn"}
+            <Button
+              isLoading={isLoading}
               onClick={handleSignIn}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span>Loading...</span>
-              ) : (
-                <span>Login to Panel</span>
-              )}
-            </button>
+              buttonText="Login to Panel"
+              loadingText="Signing in..."
+              className="login-btn"
+            />
             {/* <button type="submit" className="btn" onClick={handleSignUp}>
                 Sign up to Panel
               </button> */}

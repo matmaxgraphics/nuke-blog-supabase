@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
+import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
 function CreatePost() {
@@ -11,6 +12,7 @@ function CreatePost() {
   const [categories, setCategories] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -78,6 +80,9 @@ function CreatePost() {
       } = await supabase.auth.getUser();
       const user_id = user?.id;
 
+      const author = user?.user_metadata?.full_name;
+      setAuthor(author);
+
       const { data, error } = await supabase
         .from("blog-posts")
         .insert([
@@ -86,8 +91,9 @@ function CreatePost() {
             body,
             image: imageUrl,
             category: selectedCategory,
-            category_id: selectedCategoryId, // Add this line
+            category_id: selectedCategoryId,
             user_id,
+            author,
           },
         ])
         .select();
@@ -129,6 +135,7 @@ function CreatePost() {
               name="title"
               className="input-field"
               value={title}
+              required
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
@@ -138,6 +145,7 @@ function CreatePost() {
               name="body"
               id="body"
               value={body}
+              required
               onChange={(e) => setBody(e.target.value)}
             ></textarea>
           </div>
@@ -148,6 +156,7 @@ function CreatePost() {
               name="image"
               accept="image/*"
               className="input-field"
+              required
               onChange={(e) => setImage(e.target.files[0])}
             />
           </div>
@@ -157,6 +166,7 @@ function CreatePost() {
               name="topic"
               className="input-field"
               value={selectedCategory}
+              required
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
                 const categoryId = categories.find(
@@ -175,9 +185,12 @@ function CreatePost() {
             </select>
           </div>
           <div className="btn-wrap">
-            <button type="submit" className="btn">
-              Add post
-            </button>
+            <Button
+              isLoading={loading}
+              buttonText="Create post"
+              loadingText="Loading..."
+              className="btn"
+            />
           </div>
         </form>
       </div>

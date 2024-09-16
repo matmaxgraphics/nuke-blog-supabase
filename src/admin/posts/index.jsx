@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
+import AdminLoader from "../../components/AdminLoader"
 import moment from "moment";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
@@ -9,9 +10,11 @@ import PanelMainLayout from "../../layout/PanelMainLayout";
 
 const ManagePost = function () {
   const [posts, setPosts] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [orderBy, setOrderBy] = useState("created_at");
   useEffect(() => {
     const fetchPosts = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("blog-posts")
         .select()
@@ -26,22 +29,26 @@ const ManagePost = function () {
         setPosts(data);
         console.log("The fetched data:", data);
       }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setIsLoading(false);
     };
 
     fetchPosts();
   }, [orderBy]);
 
-  const handleDelete = async(id)=>{
-    try{
-      await DeleteRecord("blog-posts", id)
-      setPosts(posts.filter((post)=> post.id !== id))
+  const handleDelete = async (id) => {
+    try {
+      await DeleteRecord("blog-posts", id);
+
+      setPosts(posts.filter((post) => post.id !== id));
       console.log(`Post with id: ${id} deleted successfully`);
-      
-    } catch(error){
+    } catch (error) {
       console.error("Error deleting post:", error);
-      
     }
-  }
+  };
 
   return (
     <PanelMainLayout>
@@ -54,7 +61,10 @@ const ManagePost = function () {
       <div className="content">
         <section className="articles--container recent-article--section">
           <main className="blog-cards--wrapper">
-            {posts &&
+            {isLoading ? (
+              <AdminLoader />
+            ) : (
+              posts &&
               posts.map((post, index) => (
                 <article className="blog-card--container" key={post.id}>
                   <img
@@ -69,7 +79,8 @@ const ManagePost = function () {
 
                   <div className="card--info">
                     <div className="post--author">
-                      <i className="ri-user-line"></i> <small>Mateen</small>
+                      <i className="ri-user-line"></i>{" "}
+                      <small>{post.author ?? "unknown"}</small>
                     </div>
                     <div className="post--index">
                       <i className="ri-file-list-2-line"></i>{" "}
@@ -81,12 +92,23 @@ const ManagePost = function () {
                   </div>
 
                   <div className="btn-group">
-                    <Link to={`../admin-panel/edit-post/${post.id}`} className="link-btn edit">edit</Link>
-                    <a className="link-btn delete" onClick={()=> handleDelete(post.id)}>delete</a>
+                    <Link
+                      to={`../admin-panel/edit-post/${post.id}`}
+                      className="link-btn edit"
+                    >
+                      edit
+                    </Link>
+                    <a
+                      className="link-btn delete"
+                      onClick={() => handleDelete(post.id)}
+                    >
+                      delete
+                    </a>
                     <a className="link-btn publish">unpublish</a>
                   </div>
                 </article>
-              ))}
+              ))
+            )}
           </main>
         </section>
       </div>

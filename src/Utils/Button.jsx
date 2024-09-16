@@ -1,15 +1,23 @@
-import { useState } from "react"
+import React from 'react';
 
-
-function Button() {
-    const [isLoading, setIsLoading] = useState(false)
-
-    const handleClick = ()=>{
-        setIsLoading(!isLoading);
-    }
+const Button = ({
+  isLoading = false,
+  onClick,          
+  className = '',
+  buttonText = 'Submit', 
+  loadingText = 'Loading...', 
+  disabled = false,  
+}) => {
   return (
-    <div>Button</div>
-  )
-}
+    <button
+      type="submit"
+      className={isLoading ? `loading-button btn ${className}` : `normal-button btn ${className}`}
+      onClick={onClick}
+      disabled={disabled || isLoading}
+    >
+      {isLoading ? <span>{loadingText}</span> : <span>{buttonText}</span>}
+    </button>
+  );
+};
 
-export default Button
+export default Button;

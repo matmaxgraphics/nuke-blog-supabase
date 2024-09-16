@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
+import AdminLoader from "../../components/AdminLoader";
 import { Link } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
 const ManageCategory = function () {
   const [categories, setCategories] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase.from("post-categories").select();
 
       if (error) {
@@ -20,6 +23,7 @@ const ManageCategory = function () {
         setCategories(data);
         console.log("The fetched data:", data);
       }
+      setIsLoading(false);
     };
 
     fetchCategories();
@@ -44,40 +48,48 @@ const ManageCategory = function () {
         </Link>
       </div>
       <div className="content">
-        <table>
-          <thead>
-            <tr>
-              <th>S/N</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th colSpan="2">Action</th>
-            </tr>
-          </thead>
-          {categories && (
-            <tbody>
-              {categories.map((category, index) => (
-                <tr key={category.id}>
-                  <td>{index + 1}</td>
-                  <td>{category.category_name}</td>
-                  <td>{category.category_description || "no description"}</td>
-                  <td>
-                    <Link to={`../admin-panel/edit-category/${category.id}`} className="edit">
-                      edit
-                    </Link>
-                  </td>
-                  <td>
-                    <a
-                      className="delete"
-                      onClick={() => handleDelete(category.id)}
-                    >
-                      delete
-                    </a>
-                  </td>
+        {isLoading ? (
+          <AdminLoader />
+        ) : (
+          categories && (
+            <table>
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th colSpan="2">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          )}
-        </table>
+              </thead>
+
+              <tbody>
+                {categories.map((category, index) => (
+                  <tr key={category.id}>
+                    <td>{index + 1}</td>
+                    <td>{category.category_name}</td>
+                    <td>{category.category_description || "no description"}</td>
+                    <td>
+                      <Link
+                        to={`../admin-panel/edit-category/${category.id}`}
+                        className="edit"
+                      >
+                        edit
+                      </Link>
+                    </td>
+                    <td>
+                      <a
+                        className="delete"
+                        onClick={() => handleDelete(category.id)}
+                      >
+                        delete
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )
+        )}
       </div>
     </PanelMainLayout>
   );
