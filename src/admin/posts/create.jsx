@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CreatePost() {
   const navigate = useNavigate();
@@ -104,16 +106,18 @@ function CreatePost() {
       }
 
       if (data) {
-        console.log("post created successfully:", data);
         setTitle("");
         setBody("");
         setImage(null);
         setSelectedCategory("");
         setSelectedCategoryId(""); // Reset the selected category ID
-        navigate("../admin-panel/manage-post");
+        navigate("../admin-panel/manage-post", {
+          state: { message: "Post created successfully!" },
+        });
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
+      toast.error("Error creating post. Please try again.");
     }
   };
   return (
@@ -194,6 +198,7 @@ function CreatePost() {
           </div>
         </form>
       </div>
+      <ToastContainer/>
     </PanelMainLayout>
   );
 }

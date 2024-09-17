@@ -1,8 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ManageUser = function () {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(()=>{
+    if (location.state?.message) {
+      toast.success(location.state.message);
+
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state])
+
+
+
   return (
     <PanelMainLayout>
       <div className="button-group">
@@ -38,6 +55,8 @@ const ManageUser = function () {
           </tbody>
         </table>
       </div>
+
+      <ToastContainer/>
     </PanelMainLayout>
   );
 };

@@ -4,6 +4,7 @@ import supabase from "../../config/supabaseClient";
 import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
+
 const CreateUser = function () {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -36,7 +37,9 @@ const CreateUser = function () {
       });
       if (error) throw error;
       if (data) {
-        navigateTo('../admin-panel/manage-users')
+        navigateTo("../admin-panel/manage-users", {
+          state: { message: "User created successfully!" },
+        });
         console.log(data);
       }
     } catch (error) {

@@ -2,14 +2,26 @@ import React, { useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
 import AdminLoader from "../../components/AdminLoader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const ManageCategory = function () {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (location.state?.message) {
+      toast.success(location.state.message);
+
+      navigate(location.pathname, { replace: true });
+    }
+
     const fetchCategories = async () => {
       setIsLoading(true);
       const { data, error } = await supabase.from("post-categories").select();
@@ -17,6 +29,7 @@ const ManageCategory = function () {
       if (error) {
         setCategories(null);
         console.log("Error fetching categories");
+        toast.error("Network error. Please refresh the page.");
       }
 
       if (data) {
@@ -27,7 +40,7 @@ const ManageCategory = function () {
     };
 
     fetchCategories();
-  }, []);
+  }, [location.state]);
 
   const handleDelete = async (id) => {
     try {
@@ -91,6 +104,7 @@ const ManageCategory = function () {
           )
         )}
       </div>
+      <ToastContainer/>
     </PanelMainLayout>
   );
 };

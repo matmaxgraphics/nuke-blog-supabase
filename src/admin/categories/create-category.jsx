@@ -3,6 +3,8 @@ import CreateRecord from "../../Utils/CreateRecord";
 import { Link, useNavigate } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 import Button from "../../Utils/Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateCategory = function () {
   const navigate = useNavigate();
@@ -23,10 +25,13 @@ const CreateCategory = function () {
         console.log("category created succesfully", data);
         setCategory("");
         setCatDescription("");
-        navigate("../admin-panel/manage-category");
+        navigate("../admin-panel/manage-category", {
+          state: { message: "Category created successfully!" },
+        });
       }
     } catch (error) {
       console.error("Error uploading data:", error);
+      toast.error("Error creating category. Please try again.");
     }
   };
   return (
@@ -71,6 +76,7 @@ const CreateCategory = function () {
           </div>
         </form>
       </div>
+      <ToastContainer/>
     </PanelMainLayout>
   );
 };

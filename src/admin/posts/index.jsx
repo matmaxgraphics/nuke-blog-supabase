@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
-import AdminLoader from "../../components/AdminLoader"
+import AdminLoader from "../../components/AdminLoader";
 import moment from "moment";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // import sidebar from "../../components/sidebar";
 
 const ManagePost = function () {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [orderBy, setOrderBy] = useState("created_at");
   useEffect(() => {
+    if (location.state?.message) {
+      toast.success(location.state.message);
+
+      navigate(location.pathname, { replace: true });
+    }
     const fetchPosts = async () => {
       setIsLoading(true);
       const { data, error } = await supabase
@@ -23,6 +34,7 @@ const ManagePost = function () {
       if (error) {
         setPosts(null);
         console.log("Error fetching posts");
+        toast.error("Network error. Please refresh the page.");
       }
 
       if (data) {
@@ -37,7 +49,7 @@ const ManagePost = function () {
     };
 
     fetchPosts();
-  }, [orderBy]);
+  }, [orderBy, location.state]);
 
   const handleDelete = async (id) => {
     try {
@@ -112,6 +124,7 @@ const ManagePost = function () {
           </main>
         </section>
       </div>
+      <ToastContainer />
     </PanelMainLayout>
   );
 };

@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditPost() {
   const { id } = useParams();
@@ -44,6 +46,7 @@ function EditPost() {
         .single();
       if (error) {
         console.log("error populating record: ", error);
+        toast.error("Network error. Please refresh the page.");
       }
       if (data) {
         setTitle(data.title);
@@ -119,10 +122,13 @@ function EditPost() {
         setBody("");
         setImage(null);
         setSelectedCategory("");
-        navigate("../admin-panel/manage-post");
+        navigate("../admin-panel/manage-post", {
+          state: { message: "Post updated successfully!" },
+        });
       }
     } catch (error) {
       console.error("Error uploading image or creating post:", error);
+      toast.error("Error updating post. Please try again.");
     }
   };
 
@@ -194,6 +200,7 @@ function EditPost() {
           </div>
         </form>
       </div>
+      <ToastContainer/>
     </PanelMainLayout>
   );
 }

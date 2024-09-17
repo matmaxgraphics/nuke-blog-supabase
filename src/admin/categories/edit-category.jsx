@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 import Button from "../../Utils/Button";
 import supabase from "../../config/supabaseClient";
+import { ToastContainer } from "react-toastify";
 
 const EditCategory = function () {
   const { id } = useParams();
@@ -35,11 +36,14 @@ const EditCategory = function () {
         console.log("category updated succesfully", data);
         setCategory("");
         setCatDescription("");
-        navigate("../admin-panel/manage-category");
+        navigate("../admin-panel/manage-category", {
+          state: { message: "Post updated successfully!" },
+        });
       }
     } catch (error) {
       console.error("Error updating category:", error);
       setIsLoading(false)
+      toast.error("Error updating category. Please try again.");
     }
   };
 
@@ -52,6 +56,7 @@ const EditCategory = function () {
         .single();
       if (error) {
         console.log("error populating record");
+        toast.error("Network error. Please refresh the page.");
       }
       if (data) {
         setCategory(data.category_name);
@@ -102,6 +107,7 @@ const EditCategory = function () {
           </div>
         </form>
       </div>
+      <ToastContainer/>
     </PanelMainLayout>
   );
 };
