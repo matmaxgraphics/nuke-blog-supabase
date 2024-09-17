@@ -2,9 +2,16 @@ import supabase from "../config/supabaseClient";
 
 const EditRecord = async (tableName, record, id) => {
   try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const user_id = user?.id;
+
+    const recordData = {...record, user_id}
+
     const { data, error } = await supabase
       .from(tableName)
-      .update([record])
+      .update([recordData])
       .eq("id", id)
       .select();
 

@@ -12,6 +12,7 @@ const CreateCategory = function () {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const data = await CreateRecord("post-categories", {
         category_name: category,
@@ -25,7 +26,7 @@ const CreateCategory = function () {
         navigate("../admin-panel/manage-category");
       }
     } catch (error) {
-      console.error("Error uploading image or creating post:", error);
+      console.error("Error uploading data:", error);
     }
   };
   return (
@@ -45,6 +46,7 @@ const CreateCategory = function () {
               name="title"
               className="input-field"
               value={category}
+              required
               onChange={(e) => setCategory(e.target.value)}
             />
           </div>

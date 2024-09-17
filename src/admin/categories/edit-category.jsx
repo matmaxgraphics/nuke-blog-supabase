@@ -14,12 +14,19 @@ const EditCategory = function () {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const user_id = user?.id;
+
       const data = await EditRecord(
         "post-categories",
         {
           category_name: category,
           category_description: catDescription,
+          user_id
         },
         id
       );
@@ -32,6 +39,7 @@ const EditCategory = function () {
       }
     } catch (error) {
       console.error("Error updating category:", error);
+      setIsLoading(false)
     }
   };
 
