@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
 import AdminLoader from "../../components/AdminLoader";
+import Modal from "../../Utils/Modal";
 import moment from "moment";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
@@ -16,6 +17,8 @@ const ManagePost = function () {
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [orderBy, setOrderBy] = useState("created_at");
   useEffect(() => {
@@ -51,14 +54,27 @@ const ManagePost = function () {
     fetchPosts();
   }, [orderBy, location.state]);
 
+  const handleOpenModal = (postId) => {
+    setSelectedPostId(postId);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPostId(null);
+  };
+
   const handleDelete = async (id) => {
     try {
       await DeleteRecord("blog-posts", id);
 
       setPosts(posts.filter((post) => post.id !== id));
+      toast.success("Post deleted successfully");
       console.log(`Post with id: ${id} deleted successfully`);
     } catch (error) {
       console.error("Error deleting post:", error);
+      toast.error("Failed to delete post");
+    } finally {
+      handleCloseModal();
     }
   };
 
@@ -112,7 +128,7 @@ const ManagePost = function () {
                     </Link>
                     <a
                       className="link-btn delete"
-                      onClick={() => handleDelete(post.id)}
+                      onClick={() => handleOpenModal(post.id)}
                     >
                       delete
                     </a>
@@ -121,6 +137,14 @@ const ManagePost = function () {
                 </article>
               ))
             )}
+            <Modal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              title={"Confirm Action"}
+              onConfirm={() => handleDelete(selectedPostId)}
+            >
+              <p>Are you sure you want to delete this post?</p>
+            </Modal>
           </main>
         </section>
       </div>
