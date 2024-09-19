@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import arrowIcon from "../assets/arrow-right.svg";
-import UseFetchPosts from "../Utils/useFetchPost";
+import UseFetchPosts from "../Utils/UseFetchPost";
 import supabase from "../config/supabaseClient";
 import SkeletonLoader from "./SkeletonLoader";
 import Date from "../Utils/Date";

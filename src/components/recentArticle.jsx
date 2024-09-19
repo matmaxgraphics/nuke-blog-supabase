@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import UseFetchPosts from "../Utils/useFetchPost";
+import UseFetchPosts from "../Utils/UseFetchPost";
 import arrowIcon from "../assets/arrow-right.svg";
 import SkeletonLoader from "./SkeletonLoader";
 import Date from "../Utils/Date";
