@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
 import AdminLoader from "../../components/AdminLoader";
+import DeleteButton from "../../Utils/DeleteButton";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
@@ -43,13 +44,8 @@ const ManageCategory = function () {
   }, [location.state]);
 
   const handleDelete = async (id) => {
-    try {
       await DeleteRecord("post-categories", id);
-      setCategories(categories.filter((category) => category.id !== id));
-      console.log(`Category with id ${id} deleted successfully.`);
-    } catch (error) {
-      console.error("Error deleting category:", error);
-    }
+      setCategories(categories.filter((category) => category.id !== id));    
   };
 
   return (
@@ -90,12 +86,7 @@ const ManageCategory = function () {
                       </Link>
                     </td>
                     <td>
-                      <a
-                        className="delete"
-                        onClick={() => handleDelete(category.id)}
-                      >
-                        delete
-                      </a>
+                    <DeleteButton onDelete={() => handleDelete(category.id)} />
                     </td>
                   </tr>
                 ))}

@@ -27,9 +27,9 @@ const DeleteButton = ({ onDelete, dataName = "item" }) => {
 
   return (
     <>
-      <button className="link-btn delete" onClick={handleOpenModal}>
+      <a className="link-btn delete" onClick={handleOpenModal}>
         delete
-      </button>
+      </a>
 
       <Modal
         isOpen={isModalOpen}

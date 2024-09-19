@@ -4,6 +4,7 @@ import supabase from "../../config/supabaseClient";
 import DeleteRecord from "../../Utils/DeleteRecord";
 import AdminLoader from "../../components/AdminLoader";
 import Modal from "../../Utils/Modal";
+import DeleteButton from "../../Utils/DeleteButton";
 import moment from "moment";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 
@@ -64,18 +65,8 @@ const ManagePost = function () {
   };
 
   const handleDelete = async (id) => {
-    try {
-      await DeleteRecord("blog-posts", id);
-
-      setPosts(posts.filter((post) => post.id !== id));
-      toast.success("Post deleted successfully");
-      console.log(`Post with id: ${id} deleted successfully`);
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast.error("Failed to delete post");
-    } finally {
-      handleCloseModal();
-    }
+    await DeleteRecord("blog-posts", id);
+    setPosts(posts.filter((post) => post.id !== id));
   };
 
   return (
@@ -126,12 +117,7 @@ const ManagePost = function () {
                     >
                       edit
                     </Link>
-                    <a
-                      className="link-btn delete"
-                      onClick={() => handleOpenModal(post.id)}
-                    >
-                      delete
-                    </a>
+                    <DeleteButton onDelete={() => handleDelete(post.id)} />
                     <a className="link-btn publish">unpublish</a>
                   </div>
                 </article>
