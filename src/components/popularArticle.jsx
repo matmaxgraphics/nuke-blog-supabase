@@ -11,7 +11,7 @@ const PopularArticle = () => {
   return (
     <section className="popular-article--section recent-article--section max-width">
       <h2>Popular Articles</h2>
-      <main className="blog-cards--wrapper">
+      <main className="blog-cards--wrapper column--direction">
         {isLoading ? (
           <SkeletonLoader />
         ) : (

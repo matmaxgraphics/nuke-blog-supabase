@@ -74,7 +74,7 @@
       color: $grey-01;
       margin-bottom: 8px;
     }
-    .blog-title{
+    .blog-title {
       margin-top: 8px;
     }
   }
@@ -103,6 +103,10 @@
 
 /*============POPULAR ARTICLE SECTION STYLNG===========*/
 .popular-article--section {
+  .column--direction {
+    flex-direction: column;
+
+  }
   .blog-card {
     display: flex;
     gap: 24px;
@@ -119,6 +123,13 @@
     h4 {
       margin-bottom: 16px;
     }
+    .blog-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .read--more_btn {
       justify-content: flex-start;
       margin-top: 24px;
@@ -128,6 +139,9 @@
 
 @media (max-width: 700px) {
   .popular-article--section {
+    .column--direction{
+      flex-flow: row wrap;
+    }
     .blog-card {
       flex-direction: column;
       width: calc(50% - 16px);
@@ -148,12 +162,10 @@
       width: calc(100% - 0px);
       margin-bottom: 24px;
     }
-
   }
 }
 
 /*============END OF POPULAR ARTICLE SECTION STYLNG===========*/
-
 
 /*============SINGLE ARTICLE PAGE STYLNG===========*/
 section.articles--container {
