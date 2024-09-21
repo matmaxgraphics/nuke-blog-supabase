@@ -1,16 +1,100 @@
-const Newsletter =()=>{
-    return(
-        <section className="newsletter-section max-width">
-            <article className="newsletter--content">
-                <h2>Never <span>miss</span> an update</h2>
-                <p>Get our blog articles sent to your mail directly when a new one is created</p>
-                <div>  
-                    <input type="email" name="emailHASED" id="emailHASED" className="email-field input-field" placeholder="Your email address..."/>
-                    <button type="submit" className="submit-btn btn">Start getting update</button>
-                </div>
-            </article>
-        </section>
-    )
-}
+import { useState } from "react";
+import Button from "../Utils/Button";
+import emailjs from "emailjs-com";
+
+
+const Newsletter = () => {
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleInput = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleValidation = () => {
+    if (email === "" || !/\S+@\S+\.\S+/.test(email)) {
+      setIsEmailValid(false);
+      return false;
+    } else {
+      setIsEmailValid(true);
+      return true;
+    }
+  };
+
+  const handleSubmit = (e) => {
+    setIsLoading(true)
+    e.preventDefault();
+    if (!handleValidation()) {
+      setErrorMessage("Please enter a valid email address");
+      return;
+    }
+
+    const templateParams = {
+      user_email: email,
+    };
+
+    emailjs
+      .send(
+        "service_3qrjxrg",
+        "template_ye1hwnr",
+        templateParams,
+        "jETIJFn19uHWtajIs"
+      )
+      .then((response) => {
+        console.log("SUCCESS!", response.status, response.text);
+        setSuccessMessage("Subscription successful!");
+        setErrorMessage("")
+        setIsLoading(false)
+        setEmail("");
+        setTimeout(() => {
+            setSuccessMessage('')
+        }, 5000);
+      })
+      .catch((error) => {
+        console.error("Failed to send email", error);
+        setErrorMessage("Subscription failed. Please try again.");
+        setIsLoading(false)
+      });
+  };
+
+  return (
+    <section className="newsletter-section max-width">
+      <article className="newsletter--content">
+        <h2>
+          Never <span>miss</span> an update
+        </h2>
+        <p>
+          Get our blog articles sent to your mail directly when a new one is
+          created
+        </p>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              required
+              className="email-field input-field"
+              placeholder="Your email address..."
+              onChange={handleInput}
+            />
+            
+            <Button
+              isLoading={isLoading}
+              buttonText="Start getting updates"
+              loadingText="Loading..."
+              className="submit-btn btn"
+            />
+          </div>
+        </form>
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+      </article>
+    </section>
+  );
+};
 
 export default Newsletter;

@@ -148,6 +148,12 @@
   span {
     color: $primaryColor;
   }
+  button{
+    span{
+
+      color: #fff ;
+    }
+  }
 }
 
 @media (max-width: 450px) {

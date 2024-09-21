@@ -101,9 +101,18 @@ const PostBodyContent = ({ body }) => {
 };
 
 const ArticleSharing = ({ articleUrl, articleTitle }) => {
+  const [copyLinkText, setCopyLinkText] = useState('Copy link')
+  const [copyIcon, setCopyIcon] = useState('<i className="ri-file-copy-line"></i>')
   const handleCopyLink = () => {
     navigator.clipboard.writeText(articleUrl);
+    setCopyLinkText('Link copied')
+    setCopyIcon('<i class="ri-check-double-line"></i>')
     console.log("Link copied to clipboard");
+
+    setTimeout(() => {
+      setCopyLinkText("Copy link")
+      setCopyIcon('<i className="ri-file-copy-line"></i>')
+    }, 5000)
   };
 
   const socialMediaLinks = {
@@ -125,7 +134,7 @@ const ArticleSharing = ({ articleUrl, articleTitle }) => {
         <h5>Share this post</h5>
         <div className="sharing-links">
           <span className="copy-link" onClick={handleCopyLink}>
-            <i className="ri-file-copy-line"></i> Copy link
+            {copyIcon} {copyLinkText}
           </span>
           <span>
             <FacebookShareButton
