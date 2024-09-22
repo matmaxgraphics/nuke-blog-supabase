@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import SingleArticlePage from "./pages/article";
 import ArticlesPage from "./pages/articles";
+import Categories from "./pages/categories.jsx";
 import ContactForm from "./pages/contact";
 import AdminLoginForm from "./admin/admin-login";
 import CreatePost from "./admin/posts/create";
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   {
     path: "all-articles",
     element: <ArticlesPage />,
+  },
+  ,
+  {
+    path: "post-categories",
+    element: <Categories />,
   },
   {
     path: "contact-page",

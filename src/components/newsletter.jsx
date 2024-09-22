@@ -38,10 +38,10 @@ const Newsletter = () => {
 
     emailjs
       .send(
-        "service_3qrjxrg",
-        "template_ye1hwnr",
+        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         templateParams,
-        "jETIJFn19uHWtajIs"
+        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       )
       .then((response) => {
         console.log("SUCCESS!", response.status, response.text);
