@@ -56,13 +56,13 @@ export default function Navbar() {
               onClick={toggleDropdown}
               // onClick={toggleDropdown}
             >
-              <Link onClick={toggleDropdown}>Categories <i class="ri-arrow-down-s-line"></i></Link>
+              <Link onClick={toggleDropdown}>Categories <i className="ri-arrow-down-s-line"></i></Link>
 
               {isDropdownOpen && (
                 <ul className="dropdown-menu">
                   {categories.map((category, index) => (
                     <li key={index}>
-                      <Link to={`/category/${category.id}`}>
+                      <Link to={`/posts-category/${category.id}`}>
                         {category.category_name}
                       </Link>
                     </li>

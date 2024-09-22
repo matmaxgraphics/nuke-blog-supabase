@@ -37,7 +37,7 @@ const router = createBrowserRouter([
   },
   ,
   {
-    path: "post-categories",
+    path: "posts-category/:id",
     element: <Categories />,
   },
   {
