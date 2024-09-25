@@ -95,7 +95,7 @@ const PostHeader = ({ title, date, image, duration }) => {
 const PostBodyContent = ({ body }) => {
   return (
     <section className="article-container max-width_1200">
-      <div><pre>{body}</pre></div>
+      <div dangerouslySetInnerHTML={{__html: body}}></div>
     </section>
   );
 };
@@ -111,7 +111,7 @@ const ArticleSharing = ({ articleUrl, articleTitle }) => {
 
     setTimeout(() => {
       setCopyLinkText("Copy link")
-      setCopyIcon('<i className="ri-file-copy-line"></i>')
+      setCopyIcon(<i className="ri-file-copy-line"></i>)
     }, 5000)
   };
 
@@ -134,7 +134,7 @@ const ArticleSharing = ({ articleUrl, articleTitle }) => {
         <h5>Share this post</h5>
         <div className="sharing-links">
           <span className="copy-link" onClick={handleCopyLink}>
-            {copyIcon} {copyLinkText}
+          <i className="ri-file-copy-line"></i> {copyLinkText}
           </span>
           <span>
             <FacebookShareButton

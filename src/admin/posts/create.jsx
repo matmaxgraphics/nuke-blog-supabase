@@ -5,6 +5,7 @@ import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Editor from "../../components/Editor/editor";
 
 function CreatePost() {
   const navigate = useNavigate();
@@ -144,14 +145,15 @@ function CreatePost() {
             />
           </div>
           <div>
-            <label>Body</label>
-            <textarea
+            {/* <label>Body</label> */}
+            {/* <textarea
               name="body"
               id="body"
               value={body}
               required
               onChange={(e) => setBody(e.target.value)}
-            ></textarea>
+            ></textarea> */}
+            <Editor value={body} onChange={setBody}/>
           </div>
           <div>
             <label>Cover Image</label>

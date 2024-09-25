@@ -36,7 +36,7 @@ function PostsCategory() {
       if (categoryError) {
         console.log("Error fetching category name:", categoryError);
       } else {
-        setCategoryName(categoryData?.category_name || "Unknown Category");
+        setCategoryName(categoryData?.category_name || "Unknown");
       }
 
       setIsLoading(false);

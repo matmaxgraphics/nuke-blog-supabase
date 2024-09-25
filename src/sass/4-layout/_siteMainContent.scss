@@ -60,6 +60,9 @@
     color: $grey-01;
     font-size: $bodyFontSize;
   }
+  ul{
+    list-style: disc;
+  }
   li {
     margin-bottom: 16px;
     &:last-child {

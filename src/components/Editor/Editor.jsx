@@ -1,0 +1,104 @@
+import { useCallback, useMemo, useRef, useState } from "react";
+
+// Importing core components
+// import QuillEditor from "react-quill";
+import ReactQuill from "react-quill";
+
+// Importing Quill styles
+import styles from "./styles.module.css";
+import "react-quill/dist/quill.snow.css";
+
+const Editor = ({value, onChange}) => {
+
+  const quill = useRef();
+
+  function handler() {
+    console.log(value);
+  }
+
+  const imageHandler = useCallback(() => {
+    //create an input element of type 'file'
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    //when a file is selected
+    input.onchange = () => {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      //Read the selected file as a data URL
+      reader.onload = () => {
+        const imageUrl = reader.result;
+        const quillEditor = quill.current.getEditor();
+
+        // Get the current selection range and insert the image at that index
+        const range = quillEditor.getSelection(true);
+        quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+      };
+      reader.readAsDataURL(file);
+    };
+  }, []);
+
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [2, 3, 4, false] }],
+          ["bold", "italic", "underline", "blockquote"],
+          [{ color: [] }],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" },
+          ],
+          ["link", "image"],
+          ["clean"],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
+      clipboard: {
+        matchVisual: true,
+      },
+    }),
+    [imageHandler]
+  );
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "color",
+    "clean",
+  ];
+
+  return (
+    <div className={styles.wrapper}>
+      <label htmlFor="body" className={styles.label}>
+        Body Content
+      </label>
+      <ReactQuill
+      ref={(el) => (quill.current = el)}
+        className={styles.editor}
+        theme="snow"
+        value={value}
+        formats={formats}
+        modules={modules}
+        onChange={onChange}
+      />
+    </div>
+  );
+};
+export default Editor;
