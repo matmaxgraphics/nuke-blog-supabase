@@ -6,6 +6,7 @@ import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Editor from "../../components/Editor/Editor";
 
 function EditPost() {
   const { id } = useParams();
@@ -155,13 +156,14 @@ function EditPost() {
             />
           </div>
           <div>
-            <label>Body</label>
-            <textarea
+            {/* <label>Body</label> */}
+            {/* <textarea
               name="body"
               id="body"
               value={body}
               onChange={(e) => setBody(e.target.value)}
-            ></textarea>
+            ></textarea> */}
+            <Editor value={body} onChange={setBody}/>
           </div>
           <div>
             <label>Cover Image</label>

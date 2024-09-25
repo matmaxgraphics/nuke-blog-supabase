@@ -5,7 +5,7 @@ import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Editor from "../../components/Editor/editor";
+import Editor from "../../components/Editor/Editor";
 
 function CreatePost() {
   const navigate = useNavigate();
