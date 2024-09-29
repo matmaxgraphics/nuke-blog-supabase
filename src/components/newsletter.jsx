@@ -33,13 +33,13 @@ const Newsletter = () => {
     }
 
     const templateParams = {
-      user_email: email,
+      email_id: email,
     };
 
     emailjs
       .send(
         import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID_2,
         templateParams,
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       )
