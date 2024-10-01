@@ -1,23 +1,35 @@
 import React, { Children, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import nukeLogoWhite from "../assets/nuke-logo-white.png";
+import supabase from "../config/supabaseClient";
 // import sidebar from "../../components/sidebar";
 
 const PanelMainLayout = function ({ children }) {
-  const navigateTo = useNavigate()
+  const navigateTo = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-
   // console.log(user_id);
-  
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    
     sessionStorage.removeItem("token");
     navigateTo("/admin-panel/admin-login");
   };
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (!session) {
+      // If no session exists, clear the token and log out the user
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user_id");
+      sessionStorage.removeItem("role");
+      window.location.href = "/admin-panel/admin-login";
+    }
+  });
+  
 
   return (
     <>
@@ -51,7 +63,9 @@ const PanelMainLayout = function ({ children }) {
 
             <div className="logout">
               <Link to="/admin-panel/admin-login">
-                <button className="btn" onClick={handleLogout}>Logout</button>
+                <button className="btn" onClick={handleLogout}>
+                  Logout
+                </button>
               </Link>
             </div>
           </nav>
@@ -63,7 +77,7 @@ const PanelMainLayout = function ({ children }) {
   );
 };
 
-const handleLogout = ({token}) => {
+const handleLogout = ({ token }) => {
   sessionStorage.removeItem("token");
   navigateTo("admin-panel/admin-login");
 };

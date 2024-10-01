@@ -22,7 +22,7 @@ const AdminLoginForm = () => {
     const savedToken = sessionStorage.getItem("token");
     if (savedToken) {
       setToken(JSON.parse(savedToken));
-      navigateTo("/admin-panel/manage-post");
+      // navigateTo("/admin-panel/manage-post");
     }
   }, [navigateTo]);
 
@@ -30,7 +30,7 @@ const AdminLoginForm = () => {
     if (token) {
       sessionStorage.setItem("token", JSON.stringify(token));
     }
-  }, [navigateTo]);
+  }, [token]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -43,14 +43,39 @@ const AdminLoginForm = () => {
         email: email,
         password: password,
       });
+
       if (error) throw error;
+
       const user_id = data.user.id;
+      // const role = data.user.user_metadata?.role;
+      const metadata = data.user.user_metadata || {};
+    const role = metadata.role || null;  // Fallback in case 'role' is missing
+
+    console.log("User Role: ", role);
+
+      console.log(role);
+      
+
       sessionStorage.setItem("user_id", user_id);
-      const userEmail = data?.user?.user_metadata?.full_name;
-      sessionStorage.setItem("user_email", userEmail);
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem(
+        "user_email",
+        data?.user?.user_metadata?.full_name
+      );
       setToken(data.session.access_token);
+
       console.log(data);
-      navigateTo("/admin-panel/manage-post");
+
+      if (role === "admin" || role === "editor") {
+        navigateTo("/admin-panel/manage-post");
+      } else {
+        setErrorMessage(
+          "Access denied. You are not allowed to access this panel."
+        );
+        setIsLoading(false)
+        setTimeout(()=>navigateTo("/"), 5000)
+      }
+
     } catch (error) {
       console.error("sign-in error", error.message);
       setErrorMessage(

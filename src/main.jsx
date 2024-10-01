@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ProtectedRoute from "./layout/ProtectedRoute.jsx";
 import ErrorPage from "./error-page";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -91,6 +92,14 @@ const router = createBrowserRouter([
   {
     path: "dropdown-test",
     element: <CustomDropdown />,
+  },
+  {
+    path: "admin-panel/*",
+    element: (
+      <ProtectedRoute allowedRoles={["admin", "editor"]}>
+        <ManagePost />
+      </ProtectedRoute>
+    ),
   },
 ]);
 
