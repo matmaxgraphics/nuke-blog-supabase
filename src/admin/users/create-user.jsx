@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
+import { toast, ToastContainer } from "react-toastify";
 import Button from "../../Utils/Button";
 import PanelMainLayout from "../../layout/PanelMainLayout";
-
 
 const CreateUser = function () {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [revealPassword, setRevealPassword] = useState(false);
@@ -18,34 +19,44 @@ const CreateUser = function () {
   };
 
   const navigateTo = useNavigate();
-  
+
   const handleSignUp = async (e) => {
     e.preventDefault();
-    
+
     setIsLoading(true);
     setErrorMessage(null);
-    
+
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            full_name: fullname,
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_USER_API_URL}/create-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        },
-      });
-      if (error) throw error;
-      if (data) {
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            full_name: fullname,
+            role: selectedRole,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
         navigateTo("../admin-panel/manage-users", {
           state: { message: "User created successfully!" },
         });
-        console.log(data);
+      } else {
+        setErrorMessage(
+          result.error || "Error creating user, please try again"
+        );
       }
     } catch (error) {
       console.error("Sign up error", error);
-      setErrorMessage("There's an error signing up, please try again");
-
+      toast.error("An error occured");
       setIsLoading(false);
     }
   };
@@ -63,10 +74,10 @@ const CreateUser = function () {
         <h2 className="page-title">Create User</h2>
         <form className="contact-form">
           <div>
-            <label htmlFor="fullname">Fullname</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
-              name="name"
+              name="username"
               className="input-field"
               placeholder="e.g John Doe"
               value={fullname}
@@ -101,6 +112,21 @@ const CreateUser = function () {
               {revealPassword ? "Hide" : "Show"}
             </small>
           </div>
+          <div>
+            <label>Assign a Role</label>
+            <select
+              name="topic"
+              className="input-field"
+              value={selectedRole}
+              required
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="">Select a category</option>
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="user">User</option>
+            </select>
+          </div>
 
           {errorMessage && (
             <div className="alert-message">
@@ -123,6 +149,7 @@ const CreateUser = function () {
               </button> */}
         </form>
       </div>
+      <ToastContainer />
     </PanelMainLayout>
   );
 };

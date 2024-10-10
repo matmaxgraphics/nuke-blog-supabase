@@ -77,9 +77,4 @@ const PanelMainLayout = function ({ children }) {
   );
 };
 
-const handleLogout = ({ token }) => {
-  sessionStorage.removeItem("token");
-  navigateTo("admin-panel/admin-login");
-};
-
 export default PanelMainLayout;
